@@ -1,7 +1,6 @@
 const Mutations = {
   async createItem(parent, args, ctx, info) {
     // TODO: Check if they are logged in
-
     const item = await ctx.db.mutation.createItem(
       {
         data: {
@@ -10,9 +9,6 @@ const Mutations = {
       }, 
       info
     );
-
-    console.log(item);
-
     return item;
   },
   updateItem(parent, args, ctx, info) {
@@ -31,6 +27,13 @@ const Mutations = {
       info
     );
   },
+  deleteItem(parent, args, ctx, info) {
+    const where = { id: args.id};
+    // find the item
+    // Check if req has permissions to delete
+    // Delete it
+  },
+
 };
 
 module.exports = Mutations;
