@@ -6,8 +6,8 @@ const Mutations = {
         data: {
           ...args,
         },
-      }, 
-      info
+      },
+      info,
     );
     return item;
   },
@@ -24,17 +24,18 @@ const Mutations = {
           id: args.id,
         },
       },
-      info
+      info,
     );
   },
-  deleteItem(parent, args, ctx, info) {
-    const where = { id: args.id};
+  async deleteItem(parent, args, ctx, info) {
+    const where = { id: args.id };
     // find the item
-    // Check if req has permissions to delete
+    const item = await ctx.db.query.item({ where }, `{ id title}`);
+    // Check if they own the item or has permissions to delete
+    //TODO: Implement
     // Delete it
+    return ctx.db.mutation.deleteItem({ where}, info);
   },
-
 };
 
 module.exports = Mutations;
- 

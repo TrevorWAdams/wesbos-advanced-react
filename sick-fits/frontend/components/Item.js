@@ -25,6 +25,7 @@ class Item extends Component {
         </Title>
         <PriceTag>{formatMoney(item.price)}</PriceTag>
         <p>{item.description}</p>
+        
         <div className="buttonList">
           <Link
             href={{
@@ -35,7 +36,7 @@ class Item extends Component {
             <a>Edit</a>
           </Link>
           <button>Add to Cart</button>
-          <DeleteItem>Delete This Item</DeleteItem>
+          <DeleteItem id={item.id}>Delete This Item</DeleteItem>
         </div>
       </ItemStyle>
     );
