@@ -11,10 +11,10 @@ const ALL_ITEMS_QUERY = gql`
     items(first: $first, skip: $skip, orderBy: createdAt_DESC) {
       id
       title
-      price
       description
       image
       largeImage
+      price
     }
   }
 `;
