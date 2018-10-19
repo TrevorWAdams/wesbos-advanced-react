@@ -14,5 +14,4 @@ const SignupPage = props => (
     <Signin />
   </Columns>
 );
-
 export default SignupPage;
