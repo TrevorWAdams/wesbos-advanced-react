@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { randomBytes } = require('crypto');
 const { promisify } = require('util');
 const { transport, makeANiceEmail } = require('../mail');
+const { hasPermission } = require('../utils');
 
 const Mutations = {
   async createItem(parent, args, ctx, info) {
@@ -22,7 +23,7 @@ const Mutations = {
           ...args,
         },
       },
-      info,
+      info
     );
 
     console.log(item);
@@ -42,7 +43,7 @@ const Mutations = {
           id: args.id,
         },
       },
-      info,
+      info
     );
   },
   async deleteItem(parent, args, ctx, info) {
@@ -68,7 +69,7 @@ const Mutations = {
           permissions: { set: ['USER'] },
         },
       },
-      info,
+      info
     );
     // create the JWT token for them
     const token = jwt.sign({ userId: user.id }, process.env.APP_SECRET);
@@ -77,7 +78,7 @@ const Mutations = {
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year cookie
     });
-    // Finally we return the user to the browser
+    // Finalllllly we return the user to the browser
     return user;
   },
   async signin(parent, { email, password }, ctx, info) {
@@ -126,9 +127,8 @@ const Mutations = {
       subject: 'Your Password Reset Token',
       html: makeANiceEmail(`Your Password Reset Token is here!
       \n\n
-      <a href="${
-        process.env.FRONTEND_URL
-      }/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
+      <a href="${process.env
+        .FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
     });
 
     // 4. Return the message
@@ -170,6 +170,37 @@ const Mutations = {
     });
     // 8. return the new user
     return updatedUser;
+  },
+  async updatePermissions(parent, args, ctx, info) {
+    // 1. Check if they are logged in
+    if (!ctx.request.userId) {
+      throw new Error('You must be logged in!');
+    }
+    // 2. Query the current user
+    const currentUser = await ctx.db.query.user(
+      {
+        where: {
+          id: ctx.request.userId,
+        },
+      },
+      info
+    );
+    // 3. Check if they have permissions to do this
+    hasPermission(currentUser, ['ADMIN', 'PERMISSIONUPDATE']);
+    // 4. Update the permissions
+    return ctx.db.mutation.updateUser(
+      {
+        data: {
+          permissions: {
+            set: args.permissions,
+          },
+        },
+        where: {
+          id: args.userId,
+        },
+      },
+      info
+    );
   },
 };
 
