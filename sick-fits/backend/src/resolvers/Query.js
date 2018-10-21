@@ -16,7 +16,6 @@ const Query = {
       info,
     );
   },
-  users: forwardTo('db'),
 };
 
 module.exports = Query;
