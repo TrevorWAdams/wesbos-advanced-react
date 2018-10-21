@@ -22,6 +22,7 @@ const Nav = () => (
               <a>Account</a>
             </Link>
             <Signout />
+            <p>{me.email}</p>
           </>
         )}
         {!me && (
